@@ -24,6 +24,7 @@ var _ = Describe("Bleat functionality", func() {
 		Expect(err).ToNot(HaveOccurred())
 		bleatSession = session
 
+		time.Sleep(time.Millisecond * 50)
 	})
 
 	AfterEach(func() {
@@ -34,7 +35,6 @@ var _ = Describe("Bleat functionality", func() {
 	})
 
 	It("should call the deke server and return modified data", func() {
-		time.Sleep(time.Millisecond * 50)
 		resp, err := http.Get("http://127.0.0.1:5000")
 
 		Expect(resp).ToNot(BeNil())
