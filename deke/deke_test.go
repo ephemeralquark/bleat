@@ -32,7 +32,7 @@ var _ = Describe("Deke", func() {
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).To(BeNil())
 
-			Expect(string(body)).To(Equal("General fake response"))
+			Expect(string(body)).To(ContainSubstring("General fake response"))
 		})
 	})
 
