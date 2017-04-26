@@ -9,7 +9,7 @@ import (
 
 	"net/http"
 	"os/exec"
-	"syscall"
+	"time"
 )
 
 var _ = Describe("Bleat functionality", func() {
@@ -19,23 +19,25 @@ var _ = Describe("Bleat functionality", func() {
 		deke.RespondWith("You should not see me")
 
 		bleatStartCommand := exec.Command(bleatPath)
+
 		session, err := Start(bleatStartCommand, GinkgoWriter, GinkgoWriter)
 		Expect(err).ToNot(HaveOccurred())
 		bleatSession = session
+
 	})
 
 	AfterEach(func() {
 		deke.Close()
 
-		err := bleatSession.Command.Process.Signal(syscall.SIGTERM)
-		Expect(err).ToNot(HaveOccurred())
-		Eventually(bleatSession, 5).Should(Exit(143))
+		bleatSession.Terminate()
+		Eventually(bleatSession).Should(Exit())
 	})
 
 	It("should call the deke server and return modified data", func() {
+		time.Sleep(time.Millisecond * 50)
 		resp, err := http.Get("http://127.0.0.1:5000")
 
-		Expect(err).ToNot(HaveOccurred())
 		Expect(resp).ToNot(BeNil())
+		Expect(err).ToNot(HaveOccurred())
 	})
 })
